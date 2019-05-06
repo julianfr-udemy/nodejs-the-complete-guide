@@ -41,4 +41,4 @@ function requestHandler(request, response) {
   response.end();
 };
 
-module.exports = requestHandler;
+exports.requestHandler = requestHandler;
