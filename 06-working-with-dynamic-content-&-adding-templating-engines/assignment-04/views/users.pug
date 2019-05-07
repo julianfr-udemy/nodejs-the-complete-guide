@@ -1,0 +1,10 @@
+extends layouts/main.pug
+
+block title
+  title New User
+  
+block content
+  h1 List of Users
+  ul
+    each usuario in usuarios
+      li= usuario

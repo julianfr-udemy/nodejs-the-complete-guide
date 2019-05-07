@@ -1,0 +1,11 @@
+extends layouts/main.pug
+
+block title
+  title New User
+  
+block content
+    h1 New User
+    form(action="/users" method="POST")
+      label(for="name") Username
+      input(type="text" name="name")
+      button(type="submit") Submit User
