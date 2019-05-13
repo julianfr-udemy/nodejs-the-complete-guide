@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+html(lang="en")
+
+head
+  meta(charset="UTF-8")
+  meta(name="viewport", content="width=device-width, initial-scale=1.0")
+  meta(http-equiv="X-UA-Compatible", content="ie=edge")
+  title #{title || 'Page Not Found'}
+  link(rel="stylesheet", href="/css/main.css")
+  block styles
+
+body
+  header.main-header
+    nav.main-header__nav
+      ul.main-header__item-list
+        li.main-header__item
+          a(class=(path==='/products' ? 'active' : '') href="/products/list") Shop
+        li.main-header__item
+          a(class=(path==='/products' ? 'active' : '') href="/products") Products
+        li.main-header__item 
+          a(class=(path==='/products/add' ? 'active' : '') href="/products/add") Add Product
+        li.main-header__item
+          a(class=(path==='/products/admin' ? 'active' : '') href="/products/admin") Admin
+        li.main-header__item
+          a(class=(path==='/cart' ? 'active' : '') href="/cart") Cart
+        li.main-header__item
+          a(class=(path==='/products/orders' ? 'active' : '') href="/products/orders") Orders
+  main
+    block content

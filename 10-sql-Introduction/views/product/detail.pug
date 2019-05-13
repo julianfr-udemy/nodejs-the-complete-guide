@@ -1,0 +1,16 @@
+extends ../layouts/main.pug
+
+append styles
+  link(rel="stylesheet" href="/css/forms.css")
+  link(rel="stylesheet" href="/css/product.css")
+
+block content
+  
+  main.centered
+    h1=product.title
+    hr
+    div
+      img(src=product.image alt=product.title)
+      h2=product.price
+      p=product.description
+      include ../includes/add-to-cart
