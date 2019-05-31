@@ -1,0 +1,16 @@
+extends ../layouts/main.pug
+
+block styles
+  link(rel="stylesheet", href="/css/product.css")
+
+block content
+  main
+    if orders.length > 0
+      each order in orders
+        ul
+          h1=order.id
+          each product in order.products
+            li=`${product.title} (${product.order_item.quantity})`
+      hr
+    else
+      h1 No Products in Cart
