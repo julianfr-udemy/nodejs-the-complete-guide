@@ -1,0 +1,31 @@
+extends ../layouts/main.pug
+
+block styles
+  link(rel="stylesheet", href="/css/product.css")
+
+block content
+  main
+    if products.length > 0
+      .grid
+        each product in products
+          article.card.product-item
+            header.card__header
+              h1.product__title=`${product._id.title} (${product.quantity})`
+            .card__image
+              img.image(src=product._id.image, alt="A Book")
+            .card__content
+              h2.product__price=`\$${product._id.price}`
+              p.product__description=product._id.description
+            .card__actions
+              a.btn(href=`/products/${product._id._id}`) Details
+              include ../includes/add-to-cart
+              form(action=`/cart/delete/${product._id._id}` method="POST") 
+                include ../includes/csrf.pug
+                button.btn(type="submit") Remove from Cart
+      hr
+      div.centered
+        form(action="/order" method="POST")
+          include ../includes/csrf.pug
+          button.btn(type="submit") Order Now!
+    else
+      h1 No Products in Cart
