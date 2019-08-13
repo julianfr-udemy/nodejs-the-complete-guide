@@ -1,0 +1,19 @@
+extends ../layouts/main.pug
+
+block styles
+  link(rel="stylesheet", href="/css/auth.css")
+  link(rel="stylesheet" href="/css/forms.css")
+
+block content
+  include ../includes/flash.pug
+  form.login-form(action="/auth/login" method="POST")
+    .form-control
+      label(for="email") Email
+      input#title(type="email" name="email" value=input.email class=validationErrors.length ? "invalid" : "")
+    .form-control
+      label(for="password") Password
+      input#image(type="password" name="password" class=validationErrors.length ? "invalid" : "")
+      include ../includes/csrf.pug
+    button.btn(type="submit") Login
+  div.centered
+    a(href="/auth/reset") Reset Password
