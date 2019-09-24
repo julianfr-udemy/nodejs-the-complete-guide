@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const io = require("../socket");
 
 const { validationResult } = require("express-validator");
 
@@ -13,7 +14,7 @@ module.exports.get = async (req, res, next) => {
     limit = 2;
 
     const totalItems = await Post.find().countDocuments();
-    const posts = await Post.find().populate("creator").skip(skip).limit(limit);
+    const posts = await Post.find().populate("creator").sort({ createdAt: -1 }).skip(skip).limit(limit);
 
     res.status(200).json({ message: "Fetched posts successfully", posts, totalItems });
   } catch (e) {
@@ -32,7 +33,6 @@ module.exports.getOne = async (req, res, next) => {
   } catch (e) {
     const error = new Error("Could not find post.");
     error.statusCode = 404;
-
     throw error;
   }
 }
@@ -43,9 +43,7 @@ module.exports.post = async (req, res, next) => {
 
     if (!(req.file && errors.isEmpty())) {
       const error = new Error(!req.file ? "No image provided." : "Validation failed, entered data is incorrect.");
-
       error.statusCode = 422;
-
       throw error;
     }
 
@@ -65,6 +63,8 @@ module.exports.post = async (req, res, next) => {
     user.posts.push(post);
 
     await user.save();
+
+    io.getIO().emit("posts", { action: "create", post: { ...post._doc, creator: { _id: req.userId, name: user.name } } });
 
     res.status(201).json({
       message: "Post created successfully!",
@@ -96,9 +96,9 @@ module.exports.put = async (req, res, next) => {
       throw error;
     }
 
-    const post = await Post.findById(id);
+    const post = await Post.findById(id).populate("creator");
 
-    if (post.creator.toString() !== req.userId) {
+    if (post.creator._id.toString() !== req.userId) {
       const error = new Error("Not Authorized!");
       error.statusCode = 403;
       throw error;
@@ -111,6 +111,8 @@ module.exports.put = async (req, res, next) => {
     post.image = image;
 
     const result = await post.save();
+
+    io.getIO().emit("posts", { action: "update", post: result });
 
     res.status(200).json({
       message: "Post updated successfully!",
@@ -146,6 +148,8 @@ module.exports.delete = async (req, res, next) => {
 
     await user.save()
 
+    io.getIO().emit("posts", { action: "delete", post: id });
+
     res.status(200).json({ message: "Post deleted successfully!" });
   } catch (error) {
     if (!error.statusCode) {
@@ -158,5 +162,5 @@ module.exports.delete = async (req, res, next) => {
 const clearImage = filePath => {
   const fp = path.join(__dirname, "..", filePath);
 
-  fs.unlink(fp);
+  fs.unlink(fp, () => null);
 }
