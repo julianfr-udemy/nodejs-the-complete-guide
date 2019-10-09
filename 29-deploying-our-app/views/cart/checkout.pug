@@ -1,0 +1,34 @@
+extends ../layouts/main.pug
+
+block styles
+  link(rel="stylesheet", href="/css/product.css")
+
+block content
+  main
+    if products.length > 0
+      .grid
+        each product in products
+          article.card.product-item
+            header.card__header
+              h1.product__title=`${product._id.title} (${product.quantity})`
+            .card__image
+              img.image(src=`/images/${product._id.image}`, alt="A Book")
+            .card__content
+              h2.product__price=`\$${product._id.price}`
+              p.product__description=product._id.description
+            .card__actions
+              a.btn(href=`/products/${product._id._id}`) Details
+              include ../includes/add-to-cart
+      div.centered
+        h2=`Total: ${total}`
+        form(action="/orders/checkout" method="POST")
+        script(
+          src="https://checkout.stripe.com/checkout.js"
+          class="stripe-button"
+          data-key="pk_test_REmxoOF5MXbnVcFCzY7Wk5Ku00LKiARyus"
+          data-name="Your Order"
+          data-description="All the items you ordered"
+          data-amount=total * 100
+          data-currency="usd")
+    else
+      h1 No Products in Cart

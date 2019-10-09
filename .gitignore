@@ -47,5 +47,6 @@ nodemon.json
 *.png
 *.pdf
 
-
-
+# SSL/TSL private key
+server.key
+server.cert
